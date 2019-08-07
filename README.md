@@ -4,5 +4,6 @@ Program that retrieves information about weather periods in a PlanetarySystem ac
 
 - Run in cmd:
 ````
+mvn clean compile
 mvn exec:java -Dexec.mainClass="com.esandoval.practise.App"
 ````
