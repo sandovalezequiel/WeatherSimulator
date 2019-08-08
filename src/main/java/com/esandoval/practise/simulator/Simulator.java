@@ -17,21 +17,22 @@ public class Simulator {
 
     private static final Integer daysInAYear = 365;
 
-    private Integer daysOfSimulation;
     private Integer maxRainDay;
-    private PlanetarySystem planetarySystem;
     private Map<Weather, Integer> periods;
+    private Map<Integer, String> history;
 
-    public Simulator(Integer yearsOfSimulation, PlanetarySystem system) {
-        this.daysOfSimulation = yearsOfSimulation * daysInAYear;
+    public Simulator(Integer yearsOfSimulation, PlanetarySystem planetarySystem) {
         this.maxRainDay = -1;
-        this.planetarySystem = system;
         this.periods = new HashMap<>();
-        stream(Weather.values()).forEach(weather -> periods.put(weather, 0));
+        this.history = new HashMap<>();
+        initialize(yearsOfSimulation, planetarySystem);
     }
 
-    public void simulate() {
+    private void initialize(Integer yearsOfSimulation, PlanetarySystem planetarySystem){
         Double simulationMaxRainBoundary = 0D;
+        Integer daysOfSimulation = yearsOfSimulation * daysInAYear;
+        stream(Weather.values()).forEach(weather -> periods.put(weather, 0));
+
         for (int currentDayInSimulation = 0; currentDayInSimulation < daysOfSimulation; currentDayInSimulation++, planetarySystem.move()) {
             Weather weather = planetarySystem.getCurrentWeather();
             Double maxPlanetarySystemRainBoundary = planetarySystem.getMaxRainBoundarySize();
@@ -40,10 +41,12 @@ public class Simulator {
                 maxRainDay = currentDayInSimulation;
                 simulationMaxRainBoundary = maxPlanetarySystemRainBoundary;
             }
-
+            history.put(currentDayInSimulation, weather.toString());
             periods.put(weather, periods.get(weather) + 1);
         }
+    }
 
+    public void printResults() {
         System.out.println("======================================================================");
         System.out.println(format("Drought periods: %s \nRain periods: %s\nOptimal periods: %s\nOther perioods: %s\n\nMax rain day in simulation:%s\n",
                 periods.get(DROUGHT),
@@ -53,9 +56,7 @@ public class Simulator {
                 maxRainDay > -1 ? maxRainDay : " No rainy periods on this years"));
     }
 
-    public void clearResults(){
-        this.maxRainDay = -1;
-        this.periods = new HashMap<>();
-        stream(Weather.values()).forEach(weather -> periods.put(weather, 0));
+    public Map<Integer, String> getHistory(){
+        return history;
     }
 }

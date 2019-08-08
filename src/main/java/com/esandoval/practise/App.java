@@ -11,6 +11,6 @@ public class App {
                         new Planet("Ferengi", 1, 500, true),
                         new Planet("Betasoide", 3, 2000, true),
                         new Planet("Vulcano", 5, 1000, false))
-        ).simulate();
+        ).printResults();
     }
 }
